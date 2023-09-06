@@ -1,7 +1,6 @@
 import 'package:ai_todo/domain/model/collection.dart';
 
-abstract class CollectionRepository {
-  Future<List<Collection>> getCollections();
+abstract class CollectionService {
 
   Future<Collection> createCollection(String name);
 

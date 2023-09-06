@@ -1,13 +1,27 @@
-import 'package:ai_todo/domain/model/task.dart';
 
 class Collection {
-  final String id;
+  final int id;
   final String name;
-  final List<Task> tasks;
 
   const Collection({
     required this.id,
     required this.name,
-    required this.tasks,
   });
+
+
+  // from json
+  Collection.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        name = json['name'];
+
+  // to json
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+    };
+  }
+
+
+
 }

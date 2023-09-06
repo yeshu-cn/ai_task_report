@@ -1,25 +1,27 @@
-class Task {
-  final int id;
+import 'package:ai_todo/domain/model/task.dart';
+
+class TaskDao {
+  int? id;
   String title;
   String description;
-  final int createTime;
+  int createTime;
   List<String> tags;
   TaskPriority priority = TaskPriority.none;
-  final int collectionId;
+  int collectionId;
   bool isDone;
 
-  Task({
+  TaskDao({
     required this.collectionId,
-    required this.id,
     required this.title,
     required this.description,
     required this.createTime,
     required this.tags,
     required this.isDone,
+    this.id,
   });
 
   // from json
-  Task.fromJson(Map<String, dynamic> json)
+  TaskDao.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         title = json['title'],
         description = json['description'],
@@ -41,13 +43,4 @@ class Task {
     };
   }
 
-
-
-}
-
-enum TaskPriority {
-  low,
-  medium,
-  high,
-  none,
 }
