@@ -8,4 +8,6 @@ abstract class CollectionRepository {
   Future<void> updateCollection(Collection collection);
 
   Future<void> deleteCollection(int id);
+
+  Future<Collection?> getCollectionByName(String name);
 }

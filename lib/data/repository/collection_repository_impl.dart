@@ -28,6 +28,11 @@ class CollectionRepositoryImpl implements CollectionRepository {
     await _dbHelper.updateCollection(collection.id, collection.name);
   }
 
+  @override
+  Future<Collection?> getCollectionByName(String name) async {
+    return await _dbHelper.getCollectionByName(name);
+  }
+
   
 
 }

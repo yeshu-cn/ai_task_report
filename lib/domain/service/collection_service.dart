@@ -7,4 +7,6 @@ abstract class CollectionService {
   Future<void> updateCollection(Collection collection);
 
   Future<void> deleteCollection(int id);
+
+  Future<Collection> getInboxCollection();
 }

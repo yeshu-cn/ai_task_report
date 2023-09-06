@@ -4,6 +4,7 @@ import 'package:ai_todo/domain/service/collection_service.dart';
 
 class CollectionServiceImpl implements CollectionService {
   final CollectionRepository _repository;
+  static const _inboxCollectionName = 'inbox';
 
   CollectionServiceImpl(this._repository);
 
@@ -20,6 +21,11 @@ class CollectionServiceImpl implements CollectionService {
   @override
   Future<void> updateCollection(Collection collection) async {
     return await _repository.updateCollection(collection);
+  }
+
+  @override
+  Future<Collection> getInboxCollection() async {
+    return (await _repository.getCollectionByName(_inboxCollectionName))!;
   }
 
 }

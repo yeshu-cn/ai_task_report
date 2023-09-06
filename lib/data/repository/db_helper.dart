@@ -43,6 +43,8 @@ class DbHelper {
             name TEXT NOT NULL
           )
           ''');
+
+    insertCollection('inbox');
   }
 
   Future<int> insertTask(TaskDao task) async {
@@ -88,6 +90,18 @@ class DbHelper {
     var data = await db.query('collection');
     return data.map((e) => Collection.fromJson(e)).toList();
   }
+
+  // get collection by name
+  Future<Collection?> getCollectionByName(String name) async {
+    Database db = await createDatabase();
+    var data = await db.query('collection', where: 'name = ?', whereArgs: [name]);
+    if (data.isEmpty) {
+      return null;
+    } else {
+      return Collection.fromJson(data.first);
+    }
+  }
+
 
   Future<int> deleteCollection(int id) async {
     Database db = await createDatabase();
