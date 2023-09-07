@@ -40,4 +40,9 @@ class TaskServiceImpl implements TaskService {
   Future<void> updateTask(Task task) async {
     return await repository.updateTask(task);
   }
+
+  @override
+  Future<List<Task>> getTasksByCollectionId(int collectionId) async {
+    return await repository.getTasksByCollectionId(collectionId);
+  }
 }

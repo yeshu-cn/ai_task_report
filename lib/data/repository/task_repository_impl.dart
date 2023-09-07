@@ -18,8 +18,14 @@ class TaskRepositoryImpl implements TaskRepository {
     required int createTime,
     required bool isDone,
   }) async {
-    var taskDao = TaskDao(collectionId: collectionId, title: title, description: description, createTime: createTime, tags: tags, isDone: isDone);
-    var id =  await _dbHelper.insertTask(taskDao);
+    var taskDao = TaskDao(
+        collectionId: collectionId,
+        title: title,
+        description: description,
+        createTime: createTime,
+        tags: tags,
+        isDone: isDone);
+    var id = await _dbHelper.insertTask(taskDao);
     taskDao.id = id;
     return _toTask(taskDao);
   }
@@ -30,7 +36,7 @@ class TaskRepositoryImpl implements TaskRepository {
   }
 
   @override
-  Future<List<Task>> fetchTasks(int collectionId) async {
+  Future<List<Task>> getTasksByCollectionId(int collectionId) async {
     var data = await _dbHelper.getTaskByCollectionId(collectionId);
     return data.map((e) {
       return _toTask(e);
@@ -39,7 +45,7 @@ class TaskRepositoryImpl implements TaskRepository {
 
   @override
   Future<Task?> getTask(int id) async {
-    var taskDao =  await _dbHelper.getTask(id);
+    var taskDao = await _dbHelper.getTask(id);
     if (null == taskDao) {
       return null;
     } else {
@@ -53,10 +59,26 @@ class TaskRepositoryImpl implements TaskRepository {
   }
 
   Task _toTask(TaskDao taskDao) {
-    return Task.fromJson(taskDao.toJson());
+    return Task(
+      collectionId: taskDao.collectionId,
+      id: taskDao.id!,
+      title: taskDao.title,
+      description: taskDao.description,
+      createTime: taskDao.createTime,
+      tags: taskDao.tags,
+      isDone: taskDao.isDone,
+    );
   }
 
   TaskDao _toTaskDao(Task task) {
-    return TaskDao.fromJson(task.toJson());
+    return TaskDao(
+      collectionId: task.collectionId,
+      id: task.id,
+      title: task.title,
+      description: task.description,
+      createTime: task.createTime,
+      tags: task.tags,
+      isDone: task.isDone,
+    );
   }
 }

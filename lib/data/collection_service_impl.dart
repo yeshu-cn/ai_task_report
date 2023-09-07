@@ -28,4 +28,9 @@ class CollectionServiceImpl implements CollectionService {
     return (await _repository.getCollectionByName(_inboxCollectionName))!;
   }
 
+  @override
+  Future<List<Collection>> getAllCollections() async {
+    return await _repository.getCollections();
+  }
+
 }

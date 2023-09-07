@@ -9,4 +9,6 @@ abstract class CollectionService {
   Future<void> deleteCollection(int id);
 
   Future<Collection> getInboxCollection();
+
+  Future<List<Collection>> getAllCollections();
 }

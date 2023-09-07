@@ -1,7 +1,7 @@
 import 'package:ai_todo/domain/model/task.dart';
 
 abstract class TaskRepository {
-  Future<List<Task>> fetchTasks(int collectionId);
+  Future<List<Task>> getTasksByCollectionId(int collectionId);
 
   Future<Task> addTask({
     required String title,

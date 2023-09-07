@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:ffi';
+
 import 'package:ai_todo/domain/model/task.dart';
 
 class TaskDao {
@@ -6,7 +9,7 @@ class TaskDao {
   String description;
   int createTime;
   List<String> tags;
-  TaskPriority priority = TaskPriority.none;
+  TaskPriority priority;
   int collectionId;
   bool isDone;
 
@@ -18,17 +21,22 @@ class TaskDao {
     required this.tags,
     required this.isDone,
     this.id,
+    this.priority = TaskPriority.none,
   });
 
   // from json
-  TaskDao.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        title = json['title'],
-        description = json['description'],
-        createTime = json['createTime'],
-        tags = json['tags'],
-        isDone = json['isDone'],
-        collectionId = json['collectionId'];
+  factory TaskDao.fromJson(Map<String, dynamic> json) {
+    return TaskDao(
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
+      createTime: json['createTime'],
+      tags: jsonDecode(json['tags']) as List<String>,
+      isDone: json['isDone'],
+      priority: TaskPriority.values.byName(json['priority']),
+      collectionId: json['collectionId'],
+    );
+  }
 
   // to json
   Map<String, dynamic> toJson() {
@@ -37,8 +45,9 @@ class TaskDao {
       'title': title,
       'description': description,
       'createTime': createTime,
-      'tags': tags,
+      'tags': jsonEncode(tags),
       'isDone': isDone,
+      'priority': priority.toString(),
       'collectionId': collectionId,
     };
   }
