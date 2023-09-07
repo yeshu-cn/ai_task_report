@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:ai_todo/domain/model/task.dart';
 
@@ -8,10 +7,11 @@ class TaskDao {
   String title;
   String description;
   int createTime;
-  List<String> tags;
-  TaskPriority priority;
+  String tags;
+  String priority;
   int collectionId;
   bool isDone;
+  int taskOrder;
 
   TaskDao({
     required this.collectionId,
@@ -20,23 +20,22 @@ class TaskDao {
     required this.createTime,
     required this.tags,
     required this.isDone,
+    required this.priority,
+    required this.taskOrder,
     this.id,
-    this.priority = TaskPriority.none,
   });
 
   // from json
-  factory TaskDao.fromJson(Map<String, dynamic> json) {
-    return TaskDao(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      createTime: json['createTime'],
-      tags: jsonDecode(json['tags']) as List<String>,
-      isDone: json['isDone'],
-      priority: TaskPriority.values.byName(json['priority']),
-      collectionId: json['collectionId'],
-    );
-  }
+  TaskDao.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        title = json['title'],
+        description = json['description'],
+        createTime = json['createTime'],
+        tags = json['tags'],
+        isDone = json['isDone'] == 1,
+        priority = json['priority'],
+        taskOrder = json['taskOrder'],
+        collectionId = json['collectionId'];
 
   // to json
   Map<String, dynamic> toJson() {
@@ -45,11 +44,13 @@ class TaskDao {
       'title': title,
       'description': description,
       'createTime': createTime,
-      'tags': jsonEncode(tags),
+      'tags': tags,
       'isDone': isDone,
-      'priority': priority.toString(),
+      'priority': priority,
+      'taskOrder': taskOrder,
       'collectionId': collectionId,
     };
   }
+
 
 }

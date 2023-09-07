@@ -1,5 +1,6 @@
 import 'package:ai_todo/ui/calendar_page.dart';
 import 'package:ai_todo/ui/collection_detail_page.dart';
+import 'package:ai_todo/ui/report_list_page.dart';
 import 'package:ai_todo/ui/setting_page.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +14,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final List<Widget> _tabs = [
     const CollectionDetailPage(),
-    const CalendarPage(),
+    // const CalendarPage(),
+    const ReportListPage(),
     const SettingPage(),
   ];
 
@@ -29,9 +31,13 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.home),
             label: '清单',
           ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.calendar_today),
+          //   label: '日历',
+          // ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: '日历',
+            icon: Icon(Icons.summarize_outlined),
+            label: '报告',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

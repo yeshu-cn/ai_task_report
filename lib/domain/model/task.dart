@@ -4,9 +4,10 @@ class Task {
   String description;
   final int createTime;
   List<String> tags;
-  TaskPriority priority = TaskPriority.none;
+  TaskPriority priority;
   final int collectionId;
   bool isDone;
+  int taskOrder;
 
   Task({
     required this.collectionId,
@@ -16,6 +17,8 @@ class Task {
     required this.createTime,
     required this.tags,
     required this.isDone,
+    required this.priority,
+    required this.taskOrder,
   });
 
   // from json
@@ -26,7 +29,10 @@ class Task {
         createTime = json['createTime'],
         tags = json['tags'],
         isDone = json['isDone'],
+        priority = json['priority'],
+        taskOrder = json['taskOrder'],
         collectionId = json['collectionId'];
+
 
   // to json
   Map<String, dynamic> toJson() {
@@ -37,12 +43,11 @@ class Task {
       'createTime': createTime,
       'tags': tags,
       'isDone': isDone,
+      'priority': priority,
       'collectionId': collectionId,
+      'taskOrder': taskOrder,
     };
   }
-
-
-
 }
 
 enum TaskPriority {

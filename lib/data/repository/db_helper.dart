@@ -1,6 +1,6 @@
 import 'package:ai_todo/data/repository/dao/task_dao.dart';
 import 'package:ai_todo/domain/model/collection.dart';
-import 'package:ai_todo/domain/model/task.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -23,6 +23,8 @@ class DbHelper {
   }
 
   void _onCreate(Database db, int version) async {
+    debugPrint("create database: $version");
+    // create table task
     await db.execute('''
           CREATE TABLE task (
             id INTEGER PRIMARY KEY,
@@ -30,9 +32,10 @@ class DbHelper {
             description TEXT NOT NULL,
             createTime INTEGER NOT NULL,
             tags TEXT NOT NULL,
-            priority INTEGER NOT NULL,
+            priority TEXT NOT NULL,
             collectionId INTEGER NOT NULL,
-            isDone INTEGER NOT NULL
+            isDone INTEGER NOT NULL,
+            taskOrder INTEGER NOT NULL
           )
           ''');
 
@@ -44,7 +47,8 @@ class DbHelper {
           )
           ''');
 
-    insertCollection('inbox');
+    // insert inbox collection
+    await db.insert('collection', {'name': 'inbox'});
   }
 
   Future<int> insertTask(TaskDao task) async {
@@ -75,8 +79,20 @@ class DbHelper {
 
   Future<List<TaskDao>> getTaskByCollectionId(int collectionId) async {
     Database db = await createDatabase();
-    var data = await db.query('task', where: 'collectionId = ?', whereArgs: [collectionId]);
+    // order by order
+    var data = await db.query('task', where: 'collectionId = ?', whereArgs: [collectionId], orderBy: 'taskOrder ASC');
     return data.map((e) => TaskDao.fromJson(e)).toList();
+  }
+
+  // get max order in collection task list
+  Future<int> getMaxTaskOrderInCollection(int collectionId) async {
+    Database db = await createDatabase();
+    var data = await db.rawQuery('SELECT MAX(`taskOrder`) FROM task WHERE collectionId = ?', [collectionId]);
+    if (data.isEmpty) {
+      return 0;
+    }
+    int? value = data.first.values.first as int?;
+    return value ?? 0;
   }
 
 

@@ -88,18 +88,21 @@ class _DrawerViewState extends State<DrawerView> {
         ),
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              // add icon
-              IconButton(
-                onPressed: () {
-                  _showAddCollectionInputSheet();
-                },
-                icon: const Icon(Icons.add),
-              ),
-              // add text
-              const Text('添加清单'),
-            ],
+          child: InkWell(
+            onTap: () {
+              _showAddCollectionInputSheet();
+            },
+            child: const Row(
+              children: [
+                // add icon
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Icon(Icons.add),
+                ),
+                // add text
+                Text('添加清单'),
+              ],
+            ),
           ),
         ),
       ],

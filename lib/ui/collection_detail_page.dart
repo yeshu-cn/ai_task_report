@@ -29,16 +29,12 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
   void _initWithInboxCollection() async {
     _collection = await getIt.get<CollectionService>().getInboxCollection();
     _tasks = await getIt.get<TaskService>().getTasksByCollectionId(_collection!.id);
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   void _loadTasks() async {
     _tasks = await getIt.get<TaskService>().getTasksByCollectionId(_collection!.id);
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -61,30 +57,17 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
         child: DrawerView(onCollectionSelected: (collection) {
           setState(() {
             _collection = collection;
+            _loadTasks();
           });
         }),
       ),
-      body: ListView.builder(
-        itemCount: _tasks.length,
+      body: ReorderableListView.builder(
         itemBuilder: (context, index) {
-          var task = _tasks[index];
-          return CheckboxListTile(
-            value: task.isDone,
-            onChanged: (value) async {
-              task.isDone = value!;
-              await getIt.get<TaskService>().updateTask(task);
-              _loadTasks();
-            },
-            title: Text(task.title),
-            subtitle: Text(task.description),
-            secondary: IconButton(
-              onPressed: () async {
-                await getIt.get<TaskService>().deleteTask(task.id);
-                _loadTasks();
-              },
-              icon: const Icon(Icons.delete_outline),
-            ),
-          );
+          return _buildItem(_tasks[index], index);
+        },
+        itemCount: _tasks.length,
+        onReorder: (oldIndex, newIndex) {
+          moveTaskAndUpdateOrder(oldIndex, newIndex);
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -116,5 +99,67 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
       await getIt.get<TaskService>().createTask(title: title, collectionId: _collection!.id);
       _loadTasks();
     }
+  }
+
+  Widget _buildItem(Task task, int index) {
+    // swipe to show delete button
+    return Dismissible(
+      key: Key('${task.id} $index'),
+      onDismissed: (direction) async {
+        await getIt.get<TaskService>().deleteTask(task.id);
+        _loadTasks();
+      },
+      confirmDismiss: (direction) async {
+        return await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('确认'),
+              content: const Text('确认删除该任务吗？'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: const Text('取消'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                  child: const Text('确认'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: CheckboxListTile(
+        value: task.isDone,
+        onChanged: (value) async {
+          task.isDone = value!;
+          await getIt.get<TaskService>().updateTask(task);
+          _loadTasks();
+        },
+        title: Text(task.title),
+      ),
+    );
+  }
+
+  Future<void> moveTaskAndUpdateOrder(int oldIndex, int newIndex) async {
+    Task taskToMove = _tasks[oldIndex];
+
+    // Updating in-memory list
+    _tasks.removeAt(oldIndex);
+    _tasks.insert(newIndex, taskToMove);
+
+    // Now, update the database for each task
+    for (int i = 0; i < _tasks.length; i++) {
+      _tasks[i].taskOrder = i;
+      await getIt.get<TaskService>().updateTask(_tasks[i]);
+    }
+
+    // Now, optionally refresh the UI
+    setState(() {});
   }
 }

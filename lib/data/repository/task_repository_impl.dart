@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ai_todo/data/repository/db_helper.dart';
 import 'package:ai_todo/data/repository/dao/task_dao.dart';
 import 'package:ai_todo/domain/model/task.dart';
@@ -18,12 +20,15 @@ class TaskRepositoryImpl implements TaskRepository {
     required int createTime,
     required bool isDone,
   }) async {
+    int order = await _dbHelper.getMaxTaskOrderInCollection(collectionId) + 1;
     var taskDao = TaskDao(
         collectionId: collectionId,
         title: title,
         description: description,
         createTime: createTime,
-        tags: tags,
+        tags: jsonEncode(tags),
+        priority: priority.name,
+        taskOrder: order,
         isDone: isDone);
     var id = await _dbHelper.insertTask(taskDao);
     taskDao.id = id;
@@ -65,8 +70,10 @@ class TaskRepositoryImpl implements TaskRepository {
       title: taskDao.title,
       description: taskDao.description,
       createTime: taskDao.createTime,
-      tags: taskDao.tags,
+      tags: List<String>.from(jsonDecode(taskDao.tags)),
       isDone: taskDao.isDone,
+      taskOrder: taskDao.taskOrder,
+      priority: TaskPriority.values.byName(taskDao.priority),
     );
   }
 
@@ -77,8 +84,10 @@ class TaskRepositoryImpl implements TaskRepository {
       title: task.title,
       description: task.description,
       createTime: task.createTime,
-      tags: task.tags,
+      tags: jsonEncode(task.tags),
       isDone: task.isDone,
+      taskOrder: task.taskOrder,
+      priority: task.priority.name,
     );
   }
 }
