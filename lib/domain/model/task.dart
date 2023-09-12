@@ -48,6 +48,31 @@ class Task {
       'taskOrder': taskOrder,
     };
   }
+
+  // copy
+  Task copyWith({
+    int? id,
+    String? title,
+    String? description,
+    int? createTime,
+    List<String>? tags,
+    bool? isDone,
+    TaskPriority? priority,
+    int? collectionId,
+    int? taskOrder,
+  }) {
+    return Task(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      createTime: createTime ?? this.createTime,
+      tags: tags ?? this.tags,
+      isDone: isDone ?? this.isDone,
+      priority: priority ?? this.priority,
+      collectionId: collectionId ?? this.collectionId,
+      taskOrder: taskOrder ?? this.taskOrder,
+    );
+  }
 }
 
 enum TaskPriority {

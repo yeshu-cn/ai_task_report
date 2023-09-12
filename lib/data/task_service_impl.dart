@@ -11,6 +11,7 @@ class TaskServiceImpl implements TaskService {
   Future<Task> createTask({
     required String title,
     required int collectionId,
+    bool isDone = false,
     String description = '',
     List<String> tag = const [],
     TaskPriority priority = TaskPriority.none,
@@ -22,7 +23,7 @@ class TaskServiceImpl implements TaskService {
       tags: tag,
       priority: priority,
       createTime: DateTime.now().millisecondsSinceEpoch,
-      isDone: false,
+      isDone: isDone,
     );
   }
 

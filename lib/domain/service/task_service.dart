@@ -8,6 +8,7 @@ abstract class TaskService {
   Future<Task> createTask({
     required String title,
     required int collectionId,
+    bool isDone = false,
     String description = '',
     List<String> tag = const [],
     TaskPriority priority = TaskPriority.none,

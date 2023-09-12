@@ -19,7 +19,7 @@ class _CalendarPageState extends State<CalendarPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // to AddTaskPage
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AddTaskPage()));
+          // Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AddTaskPage(collectionName: '',)));
         },
         tooltip: '添加任务',
         child: const Icon(Icons.add),

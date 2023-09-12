@@ -1,8 +1,10 @@
+import 'package:ai_todo/domain/model/collection.dart';
 import 'package:ai_todo/ui/add_task_page.dart';
 import 'package:flutter/material.dart';
 
 class InputTaskView extends StatefulWidget {
-  const InputTaskView({super.key});
+  final Collection collection;
+  const InputTaskView({super.key, required this.collection});
 
   @override
   State<InputTaskView> createState() => _InputTaskViewState();
@@ -220,7 +222,7 @@ class _InputTaskViewState extends State<InputTaskView> {
                         _overlayEntry!.remove();
                         _overlayEntry = null;
                       }
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const AddTaskPage()));
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddTaskPage(collection: widget.collection,)));
                     },
                     icon: const Icon(Icons.arrow_forward_ios_outlined)),
               ],

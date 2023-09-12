@@ -2,6 +2,7 @@ import 'package:ai_todo/di/di.dart';
 import 'package:ai_todo/domain/model/task.dart';
 import 'package:ai_todo/domain/service/collection_service.dart';
 import 'package:ai_todo/domain/service/task_service.dart';
+import 'package:ai_todo/ui/add_task_page.dart';
 import 'package:ai_todo/ui/month_report_page.dart';
 import 'package:ai_todo/ui/widget/drawer_view.dart';
 import 'package:ai_todo/ui/widget/input_task_view.dart';
@@ -92,7 +93,9 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
       context: context,
       shape: roundedRectangleBorder,
       builder: (context) {
-        return const InputTaskView();
+        return InputTaskView(
+          collection: _collection!,
+        );
       },
     );
     if (null != title) {
@@ -134,19 +137,63 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
           },
         );
       },
-      child: CheckboxListTile(
-        value: task.isDone,
-        onChanged: (value) async {
-          task.isDone = value!;
-          await getIt.get<TaskService>().updateTask(task);
-          _loadTasks();
-        },
-        title: Text(task.title),
+      child: _buildTaskItem(task),
+    );
+  }
+
+  Widget _buildTaskItem(Task task) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: Row(
+        children: [
+          Checkbox(
+              value: task.isDone,
+              onChanged: (value) async {
+                task.isDone = value!;
+                await getIt.get<TaskService>().updateTask(task);
+                _loadTasks();
+              }),
+          Expanded(
+              child: InkWell(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(task.title,
+                    style: TextStyle(
+                      decoration: task.isDone ? TextDecoration.lineThrough : null,
+                      fontSize: 16,
+                    )),
+                if (task.description.isNotEmpty)
+                  Text(
+                    task.description,
+                    style: TextStyle(
+                      decoration: task.isDone ? TextDecoration.lineThrough : null,
+                      fontSize: 12,
+                      color: Colors.grey,
+                    ),
+                  ),
+              ],
+            ),
+            onTap: () async {
+              await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => AddTaskPage(
+                        collection: _collection!,
+                        task: task,
+                      )));
+              _loadTasks();
+            },
+          )),
+        ],
       ),
     );
   }
 
   Future<void> moveTaskAndUpdateOrder(int oldIndex, int newIndex) async {
+    // 如果移到列表的末尾，将newIndex设置为最后一个有效索引。
+    if (newIndex > oldIndex) {
+      newIndex -= 1;
+    }
+
     Task taskToMove = _tasks[oldIndex];
 
     // Updating in-memory list
