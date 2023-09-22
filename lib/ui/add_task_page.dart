@@ -2,6 +2,7 @@ import 'package:ai_todo/di/di.dart';
 import 'package:ai_todo/domain/model/collection.dart';
 import 'package:ai_todo/domain/model/task.dart';
 import 'package:ai_todo/domain/service/task_service.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class AddTaskPage extends StatefulWidget {
@@ -22,6 +23,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final FocusNode _descFocusNode = FocusNode();
 
   var _isDone = false;
+  var _priority = TaskPriority.none;
 
   @override
   void initState() {
@@ -29,6 +31,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
       _titleController.text = widget.task!.title;
       _descController.text = widget.task!.description;
       _isDone = widget.task!.isDone;
+      _priority = widget.task!.priority;
     }
 
     _descController.addListener(() {
@@ -86,10 +89,143 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   const Text('日期'),
                   const Spacer(),
                   // icon flag
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.flag),
-                  ),
+                  PopupMenuButton(
+                      surfaceTintColor: Colors.white,
+                      icon: Icon(
+                        Icons.flag,
+                        color: _getPriorityColor(_priority),
+                      ),
+                      padding: EdgeInsets.zero,
+                      onSelected: (value) {},
+                      itemBuilder: (context) {
+                        return [
+                          PopupMenuItem(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.flag,
+                                  color: Colors.red,
+                                ),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                const Text(
+                                  '高优先级',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                // checkbox
+                                CupertinoCheckbox(
+                                  value: _priority == TaskPriority.high,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _priority = TaskPriority.high;
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                  shape: const CircleBorder(),
+                                ),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.flag,
+                                  color: Colors.orange,
+                                ),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                const Text(
+                                  '中优先级',
+                                  style: TextStyle(color: Colors.orange),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                CupertinoCheckbox(
+                                  value: _priority == TaskPriority.medium,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _priority = TaskPriority.medium;
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                  shape: const CircleBorder(),
+                                ),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.flag,
+                                  color: Colors.blue,
+                                ),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                const Text(
+                                  '低优先级',
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                CupertinoCheckbox(
+                                  value: _priority == TaskPriority.low,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _priority = TaskPriority.low;
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                  shape: const CircleBorder(),
+                                ),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            padding: const EdgeInsets.symmetric(horizontal: 8),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.flag,
+                                  color: Colors.grey,
+                                ),
+                                const SizedBox(
+                                  width: 4,
+                                ),
+                                const Text(
+                                  '无优先级',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                CupertinoCheckbox(
+                                  value: _priority == TaskPriority.none,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _priority = TaskPriority.none;
+                                    });
+                                    Navigator.of(context).pop();
+                                  },
+                                  shape: const CircleBorder(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ];
+                      }),
                 ],
               ),
             ),
@@ -139,6 +275,19 @@ class _AddTaskPageState extends State<AddTaskPage> {
     );
   }
 
+  Color _getPriorityColor(TaskPriority priority) {
+    switch (priority) {
+      case TaskPriority.high:
+        return Colors.red;
+      case TaskPriority.medium:
+        return Colors.orange;
+      case TaskPriority.low:
+        return Colors.blue;
+      case TaskPriority.none:
+        return Colors.grey;
+    }
+  }
+
   _onCreateTask() async {
     var title = _titleController.text.trim();
     var desc = _descController.text.trim();
@@ -147,6 +296,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
       collectionId: widget.collection.id,
       description: desc,
       isDone: _isDone,
+      priority: _priority,
     );
 
     if (mounted) {
@@ -163,6 +313,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
       title: _titleController.text.trim(),
       description: _descController.text.trim(),
       isDone: _isDone,
+      priority: _priority,
     );
     await getIt<TaskService>().updateTask(updatedTask);
     if (mounted) {

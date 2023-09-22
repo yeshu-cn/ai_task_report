@@ -21,6 +21,11 @@ class Task {
     required this.taskOrder,
   });
 
+  @override
+  String toString() {
+    return 'Task{id: $id, title: $title, description: $description, createTime: $createTime, tags: $tags, isDone: $isDone, priority: $priority, collectionId: $collectionId, taskOrder: $taskOrder}';
+  }
+
   // from json
   Task.fromJson(Map<String, dynamic> json)
       : id = json['id'],

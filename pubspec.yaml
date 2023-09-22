@@ -38,6 +38,8 @@ dependencies:
   get_it: ^7.6.4
   sqflite: ^2.3.0
   path: ^1.8.3
+  flutter_markdown: ^0.6.17+3
+  dart_openai: ^4.0.0
 
 dev_dependencies:
   flutter_test:

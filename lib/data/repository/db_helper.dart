@@ -47,8 +47,68 @@ class DbHelper {
           )
           ''');
 
+    // create table report
+    await db.execute('''
+          CREATE TABLE report (
+            id INTEGER PRIMARY KEY,
+            name TEXT NOT NULL,
+            createTime INTEGER NOT NULL,
+            content TEXT NOT NULL,
+            collectionId INTEGER NOT NULL
+          )
+          ''');
+
     // insert inbox collection
     await db.insert('collection', {'name': 'inbox'});
+  }
+
+  // insert report
+  Future<int> insertReport(
+      {required int collectionId, required String name, required String content, required int createTime}) async {
+    Database db = await createDatabase();
+    return await db
+        .insert('report', {'collectionId': collectionId, 'name': name, 'content': content, 'createTime': createTime});
+  }
+
+  // get report by collection id
+  Future<Map<String, dynamic>?> getReportByCollectionId(int collectionId) async {
+    Database db = await createDatabase();
+    List<Map<String, dynamic>> data =
+        await db.query('report', where: 'collectionId = ?', whereArgs: [collectionId]);
+    if (data.isEmpty) {
+      return null;
+    } else {
+      return data.first;
+    }
+  }
+
+  // get report by id
+  Future<Map<String, dynamic>?> getReportById(int id) async {
+    Database db = await createDatabase();
+    List<Map<String, dynamic>> data = await db.query('report', where: 'id = ?', whereArgs: [id]);
+    if (data.isEmpty) {
+      return null;
+    } else {
+      return data.first;
+    }
+  }
+
+  // update report
+  Future<int> updateReport({required int id, required String name, required String content}) async {
+    Database db = await createDatabase();
+    return await db.update('report', {'name': name, 'content': content}, where: 'id = ?', whereArgs: [id]);
+  }
+
+  // delete report
+  Future<int> deleteReport(int id) async {
+    Database db = await createDatabase();
+    return await db.delete('report', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // get all collection reports
+  Future<List<Map<String, dynamic>>> getAllReports() async {
+    Database db = await createDatabase();
+    return await db.query('report');
   }
 
   Future<int> insertTask(TaskDao task) async {
@@ -95,7 +155,6 @@ class DbHelper {
     return value ?? 0;
   }
 
-
   Future<int> insertCollection(String name) async {
     Database db = await createDatabase();
     return await db.insert('collection', {'name': name});
@@ -117,7 +176,6 @@ class DbHelper {
       return Collection.fromJson(data.first);
     }
   }
-
 
   Future<int> deleteCollection(int id) async {
     Database db = await createDatabase();

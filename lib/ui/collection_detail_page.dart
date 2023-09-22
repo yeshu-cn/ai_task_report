@@ -48,7 +48,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
           IconButton(
             onPressed: () {
               // to MonthReportPage
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MonthReportPage()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => MonthReportPage(collection: _collection!,)));
             },
             icon: const Icon(Icons.summarize_outlined),
           ),

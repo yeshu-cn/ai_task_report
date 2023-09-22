@@ -1,3 +1,6 @@
+import 'package:ai_todo/di/di.dart';
+import 'package:ai_todo/domain/model/collection_report.dart';
+import 'package:ai_todo/domain/service/report_service.dart';
 import 'package:flutter/material.dart';
 
 class ReportListPage extends StatefulWidget {
@@ -8,15 +11,37 @@ class ReportListPage extends StatefulWidget {
 }
 
 class _ReportListPageState extends State<ReportListPage> {
+  List<CollectionReport> _list = [];
+
+  _loadData() async {
+    _list = await getIt<ReportService>().getAllReports();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    _loadData();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('报告'),
+        title: const Text('Report'),
         centerTitle: true,
       ),
-      body: const Center(
-        child: Text('报告'),
+      body: ListView.builder(
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(_list[index].name),
+            subtitle: Text(_list[index].createTime.toString()),
+            onTap: () {
+
+            },
+          );
+        },
+        itemCount: _list.length,
       ),
     );
   }
