@@ -14,11 +14,6 @@ class ReportServiceImpl implements ReportService {
 
   @override
   Future<CollectionReport> createCollectionReport(Collection collection) async {
-    var report = await _repository.getReportByCollectionId(collection.id);
-    if (report != null) {
-      return report;
-    }
-
     var prompt = await _getReportPrompts(collection);
     var content = await _api.createCollectionReport(prompt);
 

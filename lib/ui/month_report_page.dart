@@ -23,6 +23,16 @@ class _MonthReportPageState extends State<MonthReportPage> {
     setState(() {});
   }
 
+  void _regenerateReport() async {
+    _markdownData = '';
+    setState(() {});
+    var report = await getIt.get<ReportService>().createCollectionReport(widget.collection);
+    _markdownData = report.content;
+    setState(() {
+
+    });
+  }
+
   @override
   void initState() {
     _loadMarkdownData();
@@ -35,6 +45,15 @@ class _MonthReportPageState extends State<MonthReportPage> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text("月报"),
+        actions: [
+          // regenerating report
+          IconButton(
+            onPressed: () async {
+              _regenerateReport();
+            },
+            icon: const Icon(Icons.refresh),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(

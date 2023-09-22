@@ -35,7 +35,7 @@ class _ReportListPageState extends State<ReportListPage> {
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(_list[index].name),
-            subtitle: Text(_list[index].createTime.toString()),
+            subtitle: Text(_formatTime(_list[index].createTime)),
             onTap: () {
 
             },
@@ -44,5 +44,10 @@ class _ReportListPageState extends State<ReportListPage> {
         itemCount: _list.length,
       ),
     );
+  }
+
+  String _formatTime(int time) {
+    var date = DateTime.fromMillisecondsSinceEpoch(time);
+    return '${date.year}-${date.month}-${date.day}';
   }
 }
