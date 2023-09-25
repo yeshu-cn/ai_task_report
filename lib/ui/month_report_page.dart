@@ -28,9 +28,7 @@ class _MonthReportPageState extends State<MonthReportPage> {
     setState(() {});
     var report = await getIt.get<ReportService>().createCollectionReport(widget.collection);
     _markdownData = report.content;
-    setState(() {
-
-    });
+    setState(() {});
   }
 
   @override
@@ -55,13 +53,14 @@ class _MonthReportPageState extends State<MonthReportPage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: (_markdownData.isEmpty)
-                ? const Center(child: CircularProgressIndicator())
-                : MarkdownBody(data: _markdownData)),
-      ),
+      body: _markdownData.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: MarkdownBody(data: _markdownData),
+              ),
+            ),
     );
   }
 }

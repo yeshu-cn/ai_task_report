@@ -17,7 +17,7 @@ class CollectionDetailPage extends StatefulWidget {
   State<CollectionDetailPage> createState() => _CollectionDetailPageState();
 }
 
-class _CollectionDetailPageState extends State<CollectionDetailPage> {
+class _CollectionDetailPageState extends State<CollectionDetailPage> with AutomaticKeepAliveClientMixin{
   Collection? _collection;
   List<Task> _tasks = [];
 
@@ -40,6 +40,8 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -209,4 +211,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> {
     // Now, optionally refresh the UI
     setState(() {});
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -52,4 +52,10 @@ class ReportRepositoryImpl implements ReportRepository {
     }
     return CollectionReport.fromJson(data);
   }
+
+  @override
+  Future<bool> deleteReportByCollectionId(int collectionId) async {
+    var count = await _dbHelper.deleteReportByCollectionId(collectionId);
+    return count > 0;
+  }
 }

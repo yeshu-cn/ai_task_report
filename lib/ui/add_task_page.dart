@@ -4,6 +4,7 @@ import 'package:ai_todo/domain/model/task.dart';
 import 'package:ai_todo/domain/service/task_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart' as quill;
 
 class AddTaskPage extends StatefulWidget {
   final Task? task;
@@ -24,6 +25,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   var _isDone = false;
   var _priority = TaskPriority.none;
+
+  final quill.QuillController _quillController = quill.QuillController.basic();
 
   @override
   void initState() {
@@ -258,6 +261,17 @@ class _AddTaskPageState extends State<AddTaskPage> {
                   ),
                   textInputAction: TextInputAction.done,
                 ),
+                quill.QuillEditor.basic(
+                  controller: _quillController,
+                  readOnly: false,
+                ),
+                // quill.QuillToolbar.basic(controller: _quillController),
+                // const Row(
+                //   children: [
+                //     Text('tag1'),
+                //     Text('tag2'),
+                //   ],
+                // ),
               ],
             )),
             Row(

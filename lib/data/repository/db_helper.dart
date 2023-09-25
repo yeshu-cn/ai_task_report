@@ -105,6 +105,12 @@ class DbHelper {
     return await db.delete('report', where: 'id = ?', whereArgs: [id]);
   }
 
+  // delete report by collectionId
+  Future<int> deleteReportByCollectionId(int collectionId) async {
+    Database db = await createDatabase();
+    return await db.delete('report', where: 'collectionId = ?', whereArgs: [collectionId]);
+  }
+
   // get all collection reports
   Future<List<Map<String, dynamic>>> getAllReports() async {
     Database db = await createDatabase();

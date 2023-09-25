@@ -21,6 +21,9 @@ abstract class ReportRepository {
   // delete report
   Future<void> deleteReport(int id);
 
+  // delete report by collectionId
+  Future<bool> deleteReportByCollectionId(int collectionId);
+
   // get all reports
   Future<List<CollectionReport>> getAllReports();
 }

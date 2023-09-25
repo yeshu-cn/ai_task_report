@@ -1,6 +1,9 @@
 import 'package:ai_todo/di/di.dart';
 import 'package:ai_todo/domain/model/collection_report.dart';
+import 'package:ai_todo/domain/service/collection_service.dart';
 import 'package:ai_todo/domain/service/report_service.dart';
+import 'package:ai_todo/ui/month_report_page.dart';
+import 'package:ai_todo/ui/report_detail_page.dart';
 import 'package:flutter/material.dart';
 
 class ReportListPage extends StatefulWidget {
@@ -36,8 +39,12 @@ class _ReportListPageState extends State<ReportListPage> {
           return ListTile(
             title: Text(_list[index].name),
             subtitle: Text(_formatTime(_list[index].createTime)),
-            onTap: () {
-
+            onTap: () async {
+              await Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => ReportDetailPage(
+                        reportId: _list[index].id,
+                      )));
+              _loadData();
             },
           );
         },

@@ -40,6 +40,7 @@ dependencies:
   path: ^1.8.3
   flutter_markdown: ^0.6.17+3
   dart_openai: ^4.0.0
+  flutter_quill: ^7.4.7
 
 dev_dependencies:
   flutter_test:

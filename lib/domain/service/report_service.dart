@@ -9,4 +9,10 @@ abstract class ReportService {
 
   // get all collection reports
   Future<List<CollectionReport>> getAllReports();
+
+  // get report by id
+  Future<CollectionReport?> getReportById(int id);
+
+  // delete report by id
+  Future<void> deleteReportById(int id);
 }
