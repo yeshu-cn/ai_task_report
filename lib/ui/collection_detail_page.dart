@@ -165,15 +165,6 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> with Automa
                       decoration: task.isDone ? TextDecoration.lineThrough : null,
                       fontSize: 16,
                     )),
-                if (task.description.isNotEmpty)
-                  Text(
-                    task.description,
-                    style: TextStyle(
-                      decoration: task.isDone ? TextDecoration.lineThrough : null,
-                      fontSize: 12,
-                      color: Colors.grey,
-                    ),
-                  ),
               ],
             ),
             onTap: () async {

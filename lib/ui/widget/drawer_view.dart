@@ -2,7 +2,9 @@ import 'package:ai_todo/di/di.dart';
 import 'package:ai_todo/domain/model/collection.dart';
 import 'package:ai_todo/domain/service/collection_service.dart';
 import 'package:ai_todo/ui/widget/input_collection_view.dart';
+import 'package:ai_todo/utils/sp_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 // callback
 typedef OnCollectionSelected = void Function(Collection collection);
@@ -18,14 +20,18 @@ class DrawerView extends StatefulWidget {
 
 class _DrawerViewState extends State<DrawerView> {
   List<Collection> _collections = [];
+  String? _avatar;
+  String? _nickname;
 
   @override
   void initState() {
-    _loadCollections();
+    _loadData();
     super.initState();
   }
 
-  void _loadCollections() async {
+  void _loadData() async {
+    _nickname = await SpUtils.getNickname();
+    _avatar = await SpUtils.getAvatar();
     _collections = await getIt.get<CollectionService>().getAllCollections();
     setState(() {});
   }
@@ -35,40 +41,22 @@ class _DrawerViewState extends State<DrawerView> {
     return Column(
       children: [
         DrawerHeader(
-          decoration: const BoxDecoration(
-            color: Colors.blue,
-          ),
           child: Row(
             children: [
-              const CircleAvatar(
-                backgroundImage:
-                NetworkImage('https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 16),
-                child: Text(
-                  'nickname',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
+              if (null != _avatar)
+                CircleAvatar(
+                  child: SvgPicture.asset(_avatar!),
+                ),
+              if (null != _nickname)
+                Padding(
+                  padding: const EdgeInsets.only(left: 16),
+                  child: Text(
+                    _nickname!,
+                    style: const TextStyle(
+                      fontSize: 20,
+                    ),
                   ),
                 ),
-              ),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(
-                  Icons.notifications,
-                  color: Colors.white,
-                ),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(
-                  Icons.settings,
-                  color: Colors.white,
-                ),
-                onPressed: () {},
-              ),
             ],
           ),
         ),
@@ -128,6 +116,6 @@ class _DrawerViewState extends State<DrawerView> {
     if (null != name) {
       await getIt.get<CollectionService>().createCollection(name);
     }
-    _loadCollections();
+    _loadData();
   }
 }

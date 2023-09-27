@@ -1,5 +1,6 @@
 import 'package:ai_todo/di/di.dart';
 import 'package:ai_todo/ui/home_page.dart';
+import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: const [
+        AppFlowyEditorLocalizations.delegate,
+      ],
       title: 'AI Todo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
