@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:ai_todo/domain/model/template_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SpUtils {
@@ -5,6 +8,7 @@ class SpUtils {
   static const String _keyOpenAiBaseUrl = 'openai_base_url';
   static const String _keyNickname = 'nickname';
   static const String _keyAvatar = 'avatar';
+  static const String _keyReportTemplate = 'report_template';
 
   // set openai key
   static Future<void> setOpenAiKey(String key) async {
@@ -52,5 +56,22 @@ class SpUtils {
   static Future<String?> getAvatar() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString(_keyAvatar);
+  }
+
+  // set report template
+  static Future<void> setReportTemplate(TemplateConfig config) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_keyReportTemplate, jsonEncode(config.toJson()));
+  }
+
+  // get report template
+  static Future<TemplateConfig> getReportTemplate() async {
+    final prefs = await SharedPreferences.getInstance();
+    var ret =  prefs.getString(_keyReportTemplate);
+    if (null == ret) {
+      return TemplateConfig.createDefault();
+    } else {
+      return TemplateConfig.fromJson(jsonDecode(ret));
+    }
   }
 }

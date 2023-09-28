@@ -1,4 +1,5 @@
 import 'package:ai_todo/ui/customize_avatar_page.dart';
+import 'package:ai_todo/ui/template_page.dart';
 import 'package:ai_todo/utils/sp_utils.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
@@ -93,6 +94,14 @@ class _SettingPageState extends State<SettingPage> {
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 _setOpenAiBaseUrl();
+              },
+            ),
+            // template
+            ListTile(
+              title: const Text('Template'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TemplatePage()));
               },
             ),
             ListTile(
