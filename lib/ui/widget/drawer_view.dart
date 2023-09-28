@@ -5,6 +5,7 @@ import 'package:ai_todo/ui/widget/input_collection_view.dart';
 import 'package:ai_todo/utils/sp_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttermoji/fluttermojiCircleAvatar.dart';
 
 // callback
 typedef OnCollectionSelected = void Function(Collection collection);
@@ -43,10 +44,13 @@ class _DrawerViewState extends State<DrawerView> {
         DrawerHeader(
           child: Row(
             children: [
-              if (null != _avatar)
-                CircleAvatar(
-                  child: SvgPicture.asset(_avatar!),
-                ),
+              // if (null != _avatar)
+              //   CircleAvatar(
+              //     child: SvgPicture.asset(_avatar!),
+              //   ),
+              FluttermojiCircleAvatar(
+                radius: 50,
+              ),
               if (null != _nickname)
                 Padding(
                   padding: const EdgeInsets.only(left: 16),

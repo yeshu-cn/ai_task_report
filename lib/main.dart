@@ -1,14 +1,24 @@
 import 'package:ai_todo/di/di.dart';
 import 'package:ai_todo/ui/home_page.dart';
+import 'package:ai_todo/utils/sp_utils.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  OpenAI.apiKey = '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';
-  OpenAI.baseUrl = 'https://openai.yeshu.fun';
   setupDi();
   runApp(const MyApp());
+}
+
+void initOpenAi() async {
+  var openAI = await SpUtils.getOpenAiKey();
+  var baseUrl = await SpUtils.getOpenAiBaseUrl();
+  if (null != openAI) {
+    OpenAI.apiKey = openAI;
+  }
+  if (null != baseUrl) {
+    OpenAI.baseUrl = baseUrl;
+  }
 }
 
 class MyApp extends StatelessWidget {

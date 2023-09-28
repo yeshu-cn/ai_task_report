@@ -1,6 +1,9 @@
+import 'package:ai_todo/ui/customize_avatar_page.dart';
 import 'package:ai_todo/utils/sp_utils.dart';
+import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttermoji/fluttermojiCircleAvatar.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({super.key});
@@ -17,7 +20,7 @@ class _SettingPageState extends State<SettingPage> {
 
   _loadData() async {
     _nickname = await SpUtils.getNickname() ?? 'nickname';
-    _avatar = await SpUtils.getAvatar() ?? 'assets/images/avatar.jpg';
+    _avatar = await SpUtils.getAvatar() ?? 'assets/images/emoji/0.svg';
     _openaiKey = await SpUtils.getOpenAiKey();
     _openaiBaseUrl = await SpUtils.getOpenAiBaseUrl() ?? 'https://api.openai.com';
     setState(() {});
@@ -39,36 +42,41 @@ class _SettingPageState extends State<SettingPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // avatar
-            ListTile(
-              title: const Text('Avatar'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircleAvatar(
-                    child: SvgPicture.asset(_avatar),
-                  ),
-                  const Icon(Icons.chevron_right),
-                ],
+            Hero(
+              tag: 'avatar',
+              child: GestureDetector(
+                child: FluttermojiCircleAvatar(
+                  radius: 50,
+                ),
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CustomizeAvatarPage()));
+                },
               ),
-              onTap: () {
-                _setAvatar();
-              },
             ),
-            // nickname
-            ListTile(
-              title: const Text('Nickname'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(_nickname),
-                  const Icon(Icons.chevron_right),
-                ],
-              ),
+            const SizedBox(height: 10,),
+            InkWell(
+              child: Text(_nickname, style: const TextStyle(fontSize: 16),),
               onTap: () {
                 _setNickname();
               },
             ),
+            const SizedBox(height: 10,),
+            // avatar
+            // ListTile(
+            //   title: const Text('Avatar'),
+            //   trailing: Row(
+            //     mainAxisSize: MainAxisSize.min,
+            //     children: [
+            //       CircleAvatar(
+            //         child: SvgPicture.asset(_avatar),
+            //       ),
+            //       const Icon(Icons.chevron_right),
+            //     ],
+            //   ),
+            //   onTap: () {
+            //     // _setAvatar();
+            //   },
+            // ),
             // set api key
             ListTile(
               title: const Text('Set OpenAi Key'),
@@ -122,6 +130,7 @@ class _SettingPageState extends State<SettingPage> {
             ),
             TextButton(
               onPressed: () {
+                OpenAI.apiKey = _openaiKey!;
                 SpUtils.setOpenAiKey(_openaiKey!);
                 setState(() {});
                 Navigator.of(context).pop();
@@ -157,6 +166,7 @@ class _SettingPageState extends State<SettingPage> {
             ),
             TextButton(
               onPressed: () {
+                OpenAI.baseUrl = _openaiBaseUrl;
                 SpUtils.setOpenAiBaseUrl(_openaiBaseUrl);
                 setState(() {});
                 Navigator.of(context).pop();
@@ -236,17 +246,18 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   String _getOpenAiKey() {
-    if (null == _openaiKey) {
+    if (null == _openaiKey || _openaiKey!.isEmpty) {
       return 'Not Set';
     } else {
       // replace others with *, only show last 4 chars, like: ******1234, keep the length
-      var length = _openaiKey!.length;
-      var last4 = _openaiKey!.substring(length - 4, length);
-      var others = '';
-      for (var i = 0; i < length - 4; i++) {
-        others += '*';
-      }
-      return '$others$last4';
+      // var length = _openaiKey!.length;
+      // var last4 = _openaiKey!.substring(length - 4, length);
+      // var others = '';
+      // for (var i = 0; i < length - 4; i++) {
+      //   others += '*';
+      // }
+      // return '$others$last4';
+      return _openaiKey!;
     }
   }
 

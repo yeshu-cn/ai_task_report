@@ -1,6 +1,5 @@
 import 'package:ai_todo/data/api/openai_api.dart';
 import 'package:dart_openai/dart_openai.dart';
-import 'package:flutter/cupertino.dart';
 
 class OpenAiApiImpl implements OpenAiApi {
   @override

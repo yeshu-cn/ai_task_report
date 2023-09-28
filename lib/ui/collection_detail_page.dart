@@ -6,6 +6,7 @@ import 'package:ai_todo/ui/add_task_page.dart';
 import 'package:ai_todo/ui/month_report_page.dart';
 import 'package:ai_todo/ui/widget/drawer_view.dart';
 import 'package:ai_todo/ui/widget/input_task_view.dart';
+import 'package:ai_todo/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 import '../domain/model/collection.dart';
@@ -17,7 +18,7 @@ class CollectionDetailPage extends StatefulWidget {
   State<CollectionDetailPage> createState() => _CollectionDetailPageState();
 }
 
-class _CollectionDetailPageState extends State<CollectionDetailPage> with AutomaticKeepAliveClientMixin{
+class _CollectionDetailPageState extends State<CollectionDetailPage> with AutomaticKeepAliveClientMixin {
   Collection? _collection;
   List<Task> _tasks = [];
 
@@ -48,9 +49,21 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> with Automa
         title: _collection == null ? const Text('清单') : Text(_collection!.name),
         actions: [
           IconButton(
-            onPressed: () {
+            onPressed: () async {
               // to MonthReportPage
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => MonthReportPage(collection: _collection!,)));
+              var isSet = await isApiKeySet();
+              if (!mounted) {
+                return;
+              }
+              if (!isSet) {
+                // show snack bar
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('请先设置 OpenAI API Key')));
+                return;
+              }
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => MonthReportPage(
+                        collection: _collection!,
+                      )));
             },
             icon: const Icon(Icons.summarize_outlined),
           ),
