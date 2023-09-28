@@ -1,6 +1,7 @@
 import 'package:ai_todo/data/api/openai_api.dart';
 import 'package:ai_todo/domain/model/collection.dart';
 import 'package:ai_todo/domain/model/collection_report.dart';
+import 'package:ai_todo/domain/model/result.dart';
 import 'package:ai_todo/domain/repository/report_repository.dart';
 import 'package:ai_todo/domain/repository/task_repository.dart';
 import 'package:ai_todo/domain/service/report_service.dart';
@@ -14,20 +15,27 @@ class ReportServiceImpl implements ReportService {
   ReportServiceImpl(this._repository, this._api, this._taskRepository);
 
   @override
-  Future<CollectionReport> createCollectionReport(Collection collection) async {
-    var prompt = await _getReportPrompts(collection);
-    var content = await _api.createCollectionReport(prompt);
-    debugPrint("content is :$content");
+  Future<Result<CollectionReport>> createCollectionReport(Collection collection) async {
+    try {
+      var prompt = await _getReportPrompts(collection);
+      debugPrint("prompt is ------>:\n$prompt");
+      var content = await _api.createCollectionReport(prompt);
+      debugPrint("content is ------>:\n$content");
 
-    // delete old report
-    await _repository.deleteReportByCollectionId(collection.id);
+      // delete old report
+      await _repository.deleteReportByCollectionId(collection.id);
 
-    return await _repository.addReport(
-      collectionId: collection.id,
-      name: '${collection.name} 报告',
-      content: content,
-      createTime: DateTime.now().millisecondsSinceEpoch,
-    );
+      var report =  await _repository.addReport(
+        collectionId: collection.id,
+        name: '${collection.name} 报告',
+        content: content,
+        createTime: DateTime.now().millisecondsSinceEpoch,
+      );
+      return Result.success(report);
+    } catch (e) {
+      debugPrint("createCollectionReport error: $e");
+      return Result.failure(e as Exception);
+    }
   }
 
   @override

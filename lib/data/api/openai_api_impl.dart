@@ -5,7 +5,8 @@ class OpenAiApiImpl implements OpenAiApi {
   @override
   Future<String> createCollectionReport(String content) async {
     OpenAIChatCompletionModel chatCompletion = await OpenAI.instance.chat.create(
-      model: "gpt-3.5-turbo",
+      model: "gpt-4",
+      // model: "gpt-3.5-turbo",
       messages: [
         OpenAIChatCompletionChoiceMessageModel(
           content: content,

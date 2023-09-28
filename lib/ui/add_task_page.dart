@@ -4,6 +4,7 @@ import 'package:ai_todo/di/di.dart';
 import 'package:ai_todo/domain/model/collection.dart';
 import 'package:ai_todo/domain/model/task.dart';
 import 'package:ai_todo/domain/service/task_service.dart';
+import 'package:ai_todo/utils/utils.dart';
 import 'package:appflowy_editor/appflowy_editor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -125,7 +126,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       surfaceTintColor: Colors.white,
                       icon: Icon(
                         Icons.flag,
-                        color: _getPriorityColor(_priority),
+                        color: getPriorityColor(_priority),
                       ),
                       padding: EdgeInsets.zero,
                       onSelected: (value) {},
@@ -315,19 +316,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
         ),
       ),
     );
-  }
-
-  Color _getPriorityColor(TaskPriority priority) {
-    switch (priority) {
-      case TaskPriority.high:
-        return Colors.red;
-      case TaskPriority.medium:
-        return Colors.orange;
-      case TaskPriority.low:
-        return Colors.blue;
-      case TaskPriority.none:
-        return Colors.grey;
-    }
   }
 
   _onCreateTask() async {

@@ -80,7 +80,7 @@ class _SettingPageState extends State<SettingPage> {
             // set api key
             ListTile(
               title: const Text('Set OpenAi Key'),
-              subtitle: Text(_getOpenAiKey()),
+              subtitle: Text(_getOpenAiKey(), maxLines: 1, overflow: TextOverflow.ellipsis,),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 _setOpenAiKey();
@@ -144,6 +144,7 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   void _setOpenAiBaseUrl() {
+    var controller = TextEditingController(text: "https://");
     showDialog(
       context: context,
       builder: (context) {
@@ -153,6 +154,7 @@ class _SettingPageState extends State<SettingPage> {
             decoration: const InputDecoration(
               hintText: 'OpenAi Base URL',
             ),
+            controller: controller,
             onChanged: (value) {
               _openaiBaseUrl = value.trim();
             },
@@ -176,7 +178,7 @@ class _SettingPageState extends State<SettingPage> {
           ],
         );
       },
-    );
+    ).then((value) => controller.dispose());
   }
 
   void _setNickname() {

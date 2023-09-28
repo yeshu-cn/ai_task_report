@@ -6,7 +6,10 @@ import 'package:dart_openai/dart_openai.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SpUtils.setOpenAiKey("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");
   setupDi();
+  initOpenAi();
   runApp(const MyApp());
 }
 
@@ -19,6 +22,7 @@ void initOpenAi() async {
   if (null != baseUrl) {
     OpenAI.baseUrl = baseUrl;
   }
+  OpenAI.showLogs = true;
 }
 
 class MyApp extends StatelessWidget {

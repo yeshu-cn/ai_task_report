@@ -23,7 +23,7 @@ class Task {
 
   @override
   String toString() {
-    return 'Task{id: $id, title: $title, description: $description, createTime: $createTime, tags: $tags, isDone: $isDone, priority: $priority, collectionId: $collectionId, taskOrder: $taskOrder}';
+    return 'Task{id: $id, title: $title, description: $description, createTime: $createTime, tags: $tags, isDone: $isDone, priority: $priority, collectionId: $collectionId}';
   }
 
   // from json

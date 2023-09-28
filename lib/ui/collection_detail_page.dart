@@ -162,6 +162,7 @@ class _CollectionDetailPageState extends State<CollectionDetailPage> with Automa
       child: Row(
         children: [
           Checkbox(
+              fillColor: MaterialStateProperty.all(getPriorityColor(task.priority)),
               value: task.isDone,
               onChanged: (value) async {
                 task.isDone = value!;

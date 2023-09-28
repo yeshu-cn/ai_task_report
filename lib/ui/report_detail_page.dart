@@ -2,6 +2,7 @@ import 'package:ai_todo/di/di.dart';
 import 'package:ai_todo/domain/model/collection_report.dart';
 import 'package:ai_todo/domain/service/report_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 class ReportDetailPage extends StatefulWidget {
@@ -41,10 +42,22 @@ class _ReportDetailPageState extends State<ReportDetailPage> {
               },
               icon: const Icon(Icons.delete),
             ),
+            // copy
+            IconButton(
+              onPressed: () async {
+                // copy report
+                await Clipboard.setData(ClipboardData(text: _report!.content));
+                if (!mounted) {
+                  return;
+                }
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('复制成功')));
+              },
+              icon: const Icon(Icons.copy),
+            ),
           ],
         ),
         body: Padding(
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.all(14.0),
           child: _report == null ? const Center(child: CircularProgressIndicator()) : Markdown(data: _report!.content),
         ));
   }

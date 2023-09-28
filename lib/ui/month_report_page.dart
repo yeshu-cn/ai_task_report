@@ -1,7 +1,9 @@
 import 'package:ai_todo/di/di.dart';
 import 'package:ai_todo/domain/model/collection.dart';
+import 'package:ai_todo/domain/model/result.dart';
 import 'package:ai_todo/domain/service/report_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../utils/utils.dart';
@@ -20,16 +22,42 @@ class _MonthReportPageState extends State<MonthReportPage> {
 
   void _loadMarkdownData() async {
     var report = await getIt.get<ReportService>().getCollectionReport(widget.collection.id);
-    report ??= await getIt.get<ReportService>().createCollectionReport(widget.collection);
-    _markdownData = report.content;
+
+    if (null == report) {
+      var result = await getIt.get<ReportService>().createCollectionReport(widget.collection);
+      if (result.isSuccess) {
+        _markdownData = (result as Success).value.content;
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text((result as Failure).exception.toString()),
+          ),
+        );
+        _markdownData = 'generate report failed';
+      }
+    } else {
+      _markdownData = report.content;
+    }
+
     setState(() {});
   }
 
   void _regenerateReport() async {
     _markdownData = '';
     setState(() {});
-    var report = await getIt.get<ReportService>().createCollectionReport(widget.collection);
-    _markdownData = report.content;
+    var result = await getIt.get<ReportService>().createCollectionReport(widget.collection);
+    if (result.isSuccess) {
+      _markdownData = (result as Success).value.content;
+    } else {
+      _markdownData = 'generate report failed';
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text((result as Failure).exception.toString()),
+        ),
+      );
+    }
     setState(() {});
   }
 
@@ -53,6 +81,19 @@ class _MonthReportPageState extends State<MonthReportPage> {
             },
             icon: const Icon(Icons.refresh),
           ),
+          // copy report
+          IconButton(
+            onPressed: () async {
+              await _copyToClipboard(_markdownData);
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('已复制到剪贴板'),
+                ),
+              );
+            },
+            icon: const Icon(Icons.copy),
+          ),
         ],
       ),
       body: _markdownData.isEmpty
@@ -65,7 +106,6 @@ class _MonthReportPageState extends State<MonthReportPage> {
             ),
     );
   }
-
 
   // show confirm regenerate report dialog
   void _showConfirmRegenerateReportDialog() async {
@@ -104,5 +144,10 @@ class _MonthReportPageState extends State<MonthReportPage> {
         );
       },
     );
+  }
+
+  // copy to clipboard
+  Future<void> _copyToClipboard(String text) async {
+    await Clipboard.setData(ClipboardData(text: text));
   }
 }
